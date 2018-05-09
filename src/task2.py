@@ -7,6 +7,7 @@ from sklearn.metrics import classification_report, accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
+from sklearn.metrics import mean_squared_error
 
 def list_weather_files():
     relative_path = abspath(dirname(__file__))

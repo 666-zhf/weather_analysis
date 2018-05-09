@@ -70,13 +70,12 @@ def svm_regression(data, train_test_percentage=20):
     print clf.fit(train_X, train_y).score(test_X, test_y)
 
 def autoregression(data, train_test_percentage=20):
-    train_test_size = int(len(data) * train_test_percentage / 100)
+    train_test_size = int(len(data) * float(train_test_percentage) / 100)
     train, test = data[0:train_test_size], data[train_test_size:]
 
     # train autoregression
     model = AR(train)
     model_fit = model.fit()
-    print('Test MSE111: %.3f' % model.score(test))
     window = model_fit.k_ar
     coef = model_fit.params
 
@@ -98,6 +97,7 @@ def autoregression(data, train_test_percentage=20):
         history.append(obs)
         
     mse_error = mean_squared_error(test, predictions)
+    print 'MSE: '+ str(mse_error)
     return predictions
 
 def simple_moving_average(data, n):
@@ -108,16 +108,18 @@ def simple_moving_average(data, n):
             moving_ave = (cumsum[i] - cumsum[i-n])/n
             #can do stuff with moving_ave here
             moving_aves.append(moving_ave)
+    
+    sub_time_series = [f for i, f in enumerate(data) if i < len(moving_aves)]
 
-def running_mean(x, N):
-    cumsum = np.cumsum(np.insert(x, 0, 0)) 
-    return (cumsum[N:] - cumsum[:-N]) / float(N)
+    mse_error = mean_squared_error(sub_time_series, moving_aves)
+    print 'MSE: '+ str(mse_error)
+    return moving_aves
 
 train_test_percentage = 20
 weather_data = load_weather_data()
 time_series = weather_data[:, 0]
-running_mean = running_mean(time_series, 5)[0:20,]
 
-# knn_regression(weather_data, train_test_percentage)
-# svm_regression(weather_data, train_test_percentage)
-autoregression(time_series, train_test_percentage)
+knn_regression(weather_data, train_test_percentage)
+svm_regression(weather_data, train_test_percentage)
+print autoregression(time_series, train_test_percentage)
+print simple_moving_average(time_series, 10)
