@@ -55,7 +55,7 @@ def knn_regression(data,train_test_percentage=20):
     test_y = test_data[:,0]
 
     knn = neighbors.KNeighborsRegressor(n_neighbors=6, p=2, weights='uniform')
-    print 'knn regressor accuracy: ' + str(knn.fit(train_X, train_y).score(test_X, test_y))
+    print 'KNN regressor accuracy: ' + str(knn.fit(train_X, train_y).score(test_X, test_y))
 
 def svm_regression(data, train_test_percentage=20):
     train_test_size = int(len(data) * train_test_percentage / 100)
@@ -97,7 +97,14 @@ def autoregression(data, train_test_percentage=20):
         history.append(obs)
         
     mse_error = mean_squared_error(test, predictions)
-    print 'MSE: '+ str(mse_error)
+    print 'Autoregression MSE: '+ str(mse_error)
+    pyplot.plot(range(len(test)), predictions, color='navy', lw=2, label='prediction')
+    pyplot.plot(range(len(test)), test, color='red', lw=2, label='actual')
+    pyplot.ylabel('max temp')
+    pyplot.xlabel('days from 1/1/2009')
+    pyplot.title('Autoregression')
+    pyplot.show()
+    
     return predictions
 
 def simple_moving_average(data, n):
@@ -112,7 +119,14 @@ def simple_moving_average(data, n):
     sub_time_series = [f for i, f in enumerate(data) if i < len(moving_aves)]
 
     mse_error = mean_squared_error(sub_time_series, moving_aves)
-    print 'MSE: '+ str(mse_error)
+    print 'Simple Moving Average MSE: '+ str(mse_error)
+    pyplot.plot(range(len(sub_time_series)), moving_aves, color='navy', lw=2, label='prediction')
+    pyplot.plot(range(len(sub_time_series)), sub_time_series, color='red', lw=2, label='actual')
+    pyplot.ylabel('max temp')
+    pyplot.xlabel('days from 1/1/2009')
+    pyplot.title('Simple Moving Average')
+    pyplot.show()
+
     return moving_aves
 
 train_test_percentage = 20
@@ -121,5 +135,5 @@ time_series = weather_data[:, 0]
 
 knn_regression(weather_data, train_test_percentage)
 svm_regression(weather_data, train_test_percentage)
-#print autoregression(time_series, train_test_percentage)
-#print simple_moving_average(time_series, 10)
+autoregression(time_series, train_test_percentage)
+simple_moving_average(time_series, 10)
