@@ -45,7 +45,7 @@ def load_weather_data():
             
     return data
 
-def knn_regression(data, n_neighbors=6, train_test_percentage=20):
+def knn_regression(data,train_test_percentage=20):
     train_test_size = int(len(data) * train_test_percentage / 100)
     train_data, test_data = data[0:train_test_size, :], data[train_test_size:len(data) - 1, :]
 
@@ -54,8 +54,8 @@ def knn_regression(data, n_neighbors=6, train_test_percentage=20):
     test_X = test_data[:, 1:6]
     test_y = test_data[:,0]
 
-    knn = neighbors.KNeighborsRegressor(n_neighbors, p=2, weights='uniform')
-    print knn.fit(train_X, train_y).score(test_X, test_y)
+    knn = neighbors.KNeighborsRegressor(n_neighbors=6, p=2, weights='uniform')
+    print 'knn regressor accuracy: ' + str(knn.fit(train_X, train_y).score(test_X, test_y))
 
 def svm_regression(data, train_test_percentage=20):
     train_test_size = int(len(data) * train_test_percentage / 100)
@@ -67,7 +67,7 @@ def svm_regression(data, train_test_percentage=20):
     test_y = test_data[:,0]
 
     clf = SVR(C=1.0, epsilon=0.2, gamma=0.01)
-    print clf.fit(train_X, train_y).score(test_X, test_y)
+    print 'SVM regressor accuracy: ' + str(clf.fit(train_X, train_y).score(test_X, test_y))
 
 def autoregression(data, train_test_percentage=20):
     train_test_size = int(len(data) * float(train_test_percentage) / 100)
@@ -121,5 +121,5 @@ time_series = weather_data[:, 0]
 
 knn_regression(weather_data, train_test_percentage)
 svm_regression(weather_data, train_test_percentage)
-print autoregression(time_series, train_test_percentage)
-print simple_moving_average(time_series, 10)
+#print autoregression(time_series, train_test_percentage)
+#print simple_moving_average(time_series, 10)

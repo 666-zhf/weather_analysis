@@ -56,8 +56,7 @@ def knn_classification(data, train_test_percentage=20):
     neigh = KNeighborsClassifier(n_neighbors=10)
     neigh.fit(train_X, train_y)
     pred_y = neigh.predict(test_X)
-    print 'KNN classification'
-    print 'Score: '+ str(accuracy_score(test_y, pred_y))
+    print 'KNN classifier accuracy: ' + str(accuracy_score(test_y, pred_y))
     print(classification_report(test_y, pred_y))
 
 def logistic_classification(data, train_test_percentage=20):
@@ -68,8 +67,7 @@ def logistic_classification(data, train_test_percentage=20):
     logisticRegr = LogisticRegression(penalty='l1')
     logisticRegr.fit(train_X, train_y)
     pred_y = logisticRegr.predict(test_X)
-    print 'Logistic classification'
-    print 'Score: '+ str(accuracy_score(test_y, pred_y))
+    print 'Logistic classifier accuracy: ' + str(accuracy_score(test_y, pred_y))
     print(classification_report(test_y, pred_y))
 
 def svm_classification(data, train_test_percentage=20):
@@ -80,8 +78,7 @@ def svm_classification(data, train_test_percentage=20):
     clf = SVC()
     clf.fit(train_X, train_y)
     pred_y = clf.predict(test_X)
-    print 'SVM classification'
-    print 'Score: '+ str(accuracy_score(test_y, pred_y))
+    print 'SVM classifier accuracy: ' + str(accuracy_score(test_y, pred_y))
     print(classification_report(test_y, pred_y))
 
 train_test_percentage = 20
