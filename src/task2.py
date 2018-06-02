@@ -8,6 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.metrics import mean_squared_error
+from matplotlib import pyplot
 
 def list_weather_files():
     relative_path = abspath(dirname(__file__))
@@ -52,12 +53,13 @@ def knn_classification(data, train_test_percentage=20):
     data_X, data_y = split_features_label(data)
     test_size = float(train_test_percentage) / 100
     train_X, test_X, train_y, test_y = train_test_split(data_X, data_y, test_size=test_size, random_state=0)
-    
     neigh = KNeighborsClassifier(n_neighbors=10)
     neigh.fit(train_X, train_y)
     pred_y = neigh.predict(test_X)
-    print 'KNN classifier accuracy: ' + str(accuracy_score(test_y, pred_y))
+    accur = accuracy_score(test_y, pred_y)
+    print 'KNN classifier accuracy: ' + str(accur)
     print(classification_report(test_y, pred_y))
+    return accur
 
 def logistic_classification(data, train_test_percentage=20):
     data_X, data_y = split_features_label(data)
@@ -67,8 +69,10 @@ def logistic_classification(data, train_test_percentage=20):
     logisticRegr = LogisticRegression(penalty='l1')
     logisticRegr.fit(train_X, train_y)
     pred_y = logisticRegr.predict(test_X)
-    print 'Logistic classifier accuracy: ' + str(accuracy_score(test_y, pred_y))
+    accur = accuracy_score(test_y, pred_y)
+    print 'Logistic classifier accuracy: ' + str(accur)
     print(classification_report(test_y, pred_y))
+    return accur
 
 def svm_classification(data, train_test_percentage=20):
     data_X, data_y = split_features_label(data)
@@ -78,11 +82,33 @@ def svm_classification(data, train_test_percentage=20):
     clf = SVC()
     clf.fit(train_X, train_y)
     pred_y = clf.predict(test_X)
-    print 'SVM classifier accuracy: ' + str(accuracy_score(test_y, pred_y))
+    accur = accuracy_score(test_y, pred_y)
+    print 'SVM classifier accuracy: ' + str(accur)
     print(classification_report(test_y, pred_y))
+    return accur
+
+def test_accuracy(data, method, label):
+    tests = list()
+    tests_val = [20, 40, 60, 80, 90, 95, 99]
+
+    for test in tests_val:
+        tests.append([test, method(data, test)])
+
+    tests = np.array(tests)
+    print tests[:,0]
+
+    pyplot.plot(tests[:,0], tests[:,1], color='navy', lw=2)
+    pyplot.ylabel('test data percentage')
+    pyplot.xlabel('accuracy')
+    pyplot.title(label)
+    pyplot.show()
 
 train_test_percentage = 20
 weather_data = load_weather_data()
+
 knn_classification(weather_data, train_test_percentage)
 logistic_classification(weather_data, train_test_percentage)
 svm_classification(weather_data, train_test_percentage)
+# test_accuracy(weather_data, svm_classification, 'SVM Classification')
+# test_accuracy(weather_data, logistic_classification, 'Logistic Regression')
+# test_accuracy(weather_data, knn_classification, 'KNN Classification')

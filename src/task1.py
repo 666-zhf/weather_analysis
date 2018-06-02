@@ -55,7 +55,9 @@ def knn_regression(data,train_test_percentage=20):
     test_y = test_data[:,0]
 
     knn = neighbors.KNeighborsRegressor(n_neighbors=6, p=2, weights='uniform')
-    print 'KNN regressor accuracy: ' + str(knn.fit(train_X, train_y).score(test_X, test_y))
+    acc = knn.fit(train_X, train_y).score(test_X, test_y)
+    print 'KNN regressor accuracy: ' + str(acc)
+    return acc
 
 def svm_regression(data, train_test_percentage=20):
     train_test_size = int(len(data) * train_test_percentage / 100)
@@ -67,7 +69,9 @@ def svm_regression(data, train_test_percentage=20):
     test_y = test_data[:,0]
 
     clf = SVR(C=1.0, epsilon=0.2, gamma=0.01)
-    print 'SVM regressor accuracy: ' + str(clf.fit(train_X, train_y).score(test_X, test_y))
+    acc = clf.fit(train_X, train_y).score(test_X, test_y)
+    print 'SVM regressor accuracy: ' + str(acc)
+    return acc
 
 def autoregression(data, train_test_percentage=20):
     train_test_size = int(len(data) * float(train_test_percentage) / 100)
@@ -98,8 +102,8 @@ def autoregression(data, train_test_percentage=20):
         
     mse_error = mean_squared_error(test, predictions)
     print 'Autoregression MSE: '+ str(mse_error)
-    pyplot.plot(range(len(test)), predictions, color='navy', lw=2, label='prediction')
-    pyplot.plot(range(len(test)), test, color='red', lw=2, label='actual')
+    pyplot.plot(range(len(test)), predictions, color='red', lw=2, label='prediction')
+    pyplot.plot(range(len(test)), test, color='green', lw=2, label='actual')
     pyplot.ylabel('max temp')
     pyplot.xlabel('days from 1/1/2009')
     pyplot.title('Autoregression')
@@ -120,14 +124,31 @@ def simple_moving_average(data, n):
 
     mse_error = mean_squared_error(sub_time_series, moving_aves)
     print 'Simple Moving Average MSE: '+ str(mse_error)
-    pyplot.plot(range(len(sub_time_series)), moving_aves, color='navy', lw=2, label='prediction')
-    pyplot.plot(range(len(sub_time_series)), sub_time_series, color='red', lw=2, label='actual')
+    pyplot.plot(range(len(sub_time_series)), moving_aves, color='red', lw=2, label='prediction')
+    pyplot.plot(range(len(sub_time_series)), sub_time_series, color='green', lw=2, label='actual')
+    pyplot.legend()
     pyplot.ylabel('max temp')
     pyplot.xlabel('days from 1/1/2009')
     pyplot.title('Simple Moving Average')
     pyplot.show()
 
     return moving_aves
+
+def test_accuracy(data, method, label):
+    tests = list()
+    tests_val = [20, 40, 60, 80, 90, 95, 99]
+
+    for test in tests_val:
+        tests.append([test, method(data, test)])
+
+    tests = np.array(tests)
+    print tests[:,0]
+
+    pyplot.plot(tests[:,0], tests[:,1], color='navy', lw=2)
+    pyplot.ylabel('test data percentage')
+    pyplot.xlabel('accuracy')
+    pyplot.title(label)
+    pyplot.show()
 
 train_test_percentage = 20
 weather_data = load_weather_data()
@@ -137,3 +158,5 @@ knn_regression(weather_data, train_test_percentage)
 svm_regression(weather_data, train_test_percentage)
 autoregression(time_series, train_test_percentage)
 simple_moving_average(time_series, 10)
+# test_accuracy(weather_data, knn_regression, 'KNN Regression')
+# test_accuracy(weather_data, svm_regression, 'KNN Regression')
